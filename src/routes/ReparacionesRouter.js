@@ -6,15 +6,19 @@ const router = express.Router();
 // GET - Listar todas las reparaciones
 router.get("/", reparacionesController.getReparaciones);
 
-// GET - Obtener una reparación por ID
-router.get("/:id", reparacionesController.getReparacionById);
+router.get("/admin",reparacionesController.reparacionesAdmin)
 
-// GET - Obtener consumibles de una reparación
 router.get("/:detalleId/consumibles", reparacionesController.getConsumiblesPorDetalle);
+// GET - Obtener consumibles de una reparación
+
+router.get("/fecha",reparacionesController.getreparacionesFecha)
 
 // GET - Reparaciones de un usuario específico
+
 router.get("/usuario/:id", reparacionesController.getReparacionesPorUsuario);
 
+// GET - Obtener una reparación por ID
+router.get("/:id", reparacionesController.getReparacionById);
 // POST - Crear una nueva reparación
 router.post("/", reparacionesController.postReparacion);
 
@@ -26,5 +30,7 @@ router.delete("/:detalleId", reparacionesController.deleteReparacion);
 
 // DELETE - Eliminar un consumible de una reparación
 router.delete("/:detalleId/consumibles/:productoId", reparacionesController.deleteConsumible);
+
+
 
 export default router;

@@ -1,4 +1,5 @@
 import UsuariosServices from "../services/usuariosService.js";
+import AuthServices from "../services/AuthService.js";
 import { ResponseProvider } from "../providers/ResponseProvider.js";
 
 class UsuarioController {
@@ -52,9 +53,10 @@ class UsuarioController {
         }
     }
     static postUsuarios = async (req, res) => {
-        const { cedula, nombre, correo, telefono, usuario, contrasena } = req.body;
+        const { cedula, nombre, correo, telefono, usuario, contrasena,rol_id,id_estado } = req.body;
+
         try {
-            const Usuarios = await UsuariosServices.CreateUsuario(cedula, nombre, correo, telefono, usuario, contrasena);
+            const Usuarios = await AuthServices.registrer(cedula, nombre, correo, telefono, usuario, contrasena,rol_id,id_estado);
             // Validamos que la respuesta no tenga error
             if (Usuarios.error) {
                 // Llamamos el provider para centralizar los mensajes de respuesta

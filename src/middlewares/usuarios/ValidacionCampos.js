@@ -2,34 +2,28 @@ import { ResponseProvider } from "../../providers/ResponseProvider.js";
 import { campos } from "./campos.js";
 import connection from "../../utils/db.js";
 
-
 export async function camposUsuarios(req, res, next) {
-    const { id } = req.params;
-    console.log(id);
-    
     const errors = [];
     const bodyKeys = Object.keys(req.body);
     const camposPermitidos = campos.map((c) => c.name);
     const camposPresentes = bodyKeys.filter((key) =>
         camposPermitidos.includes(key)
     );
+
     if (camposPresentes.length === 0) {
         return ResponseProvider.error(
             res,
-            "Debe enviar al menos un campo válido para actualizar",
+            "Debe enviar al menos un campo válido",
             400
         );
     }
 
     for (const campo of campos) {
-        const {
-            name, 
-            required, 
-            minLength, 
-            maxLength, 
-        } = campo;
+        const { name, required, minLength, maxLength } = campo;
         const valor = req.body[name];
+
         if (valor !== undefined) {
+            // Campos obligatorios
             if (required && valor === "") {
                 errors.push({
                     campo: name,
@@ -37,15 +31,17 @@ export async function camposUsuarios(req, res, next) {
                 });
                 continue;
             }
+
+            // Validar longitud mínima
             if (minLength && valor.length < minLength) {
                 errors.push({
                     campo: name,
                     message: `El campo ${name} debe tener al menos ${minLength} caracteres.`,
                 });
-              
                 continue;
             }
-            // Validar el tamaño máximo del campo
+
+            // Validar longitud máxima
             if (maxLength && valor.length > maxLength) {
                 errors.push({
                     campo: name,
@@ -53,45 +49,55 @@ export async function camposUsuarios(req, res, next) {
                 });
                 continue;
             }
+
+            // Validar formato de correo
             if (name === "correo") {
-                const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+                const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
                 if (!regex.test(valor)) {
                     errors.push({
                         campo: name,
-                        mensaje: `El campo ${name} tiene un formato invalido`
-                    })
+                        message: `El campo ${name} tiene un formato inválido.`,
+                    });
                 }
-                continue
+                continue;
             }
-            if (name == "cedula") {
-                const [campos_repetidos] = await connection.query(`SELECT cedula FROM usuarios WHERE cedula = ? AND usuario_id <> ?`,[valor,id])
-                
-                if (campos_repetidos.length > 0) {
+
+            // Validar duplicados (POST = creación)
+            if (name === "cedula") {
+                const [rows] = await connection.query(
+                    `SELECT cedula FROM usuarios WHERE cedula = ?`,
+                    [valor]
+                );
+                if (rows.length > 0) {
                     errors.push({
                         campo: name,
-                        mensaje: `la ${name} ya esta registrada`
-                    })
+                        message: `La ${name} ya está registrada.`,
+                    });
                 }
-                continue
+                continue;
             }
-            if (name == "usuario") {
-                const [campos_repetidos] = await connection.query(`SELECT usuario FROM usuarios WHERE usuario = ? AND usuario_id <> ? `, [valor, id])
-                if (campos_repetidos.length > 0) {
+
+            if (name === "usuario") {
+                const [rows] = await connection.query(
+                    `SELECT usuario FROM usuarios WHERE usuario = ?`,
+                    [valor]
+                );
+                if (rows.length > 0) {
                     errors.push({
                         campo: name,
-                        mensaje: `el ${name} ya esta registrado`
-                    })
+                        message: `El ${name} ya está registrado.`,
+                    });
                 }
-                continue
+                continue;
             }
         }
     }
 
-    // Si hay errores, devolver una respuesta con los errores
+    // Retornar todos los errores encontrados
     if (errors.length > 0) {
-        // Retornamos y Llamamos el provider para centralizar los mensajes de respuesta
-        return ResponseProvider.error(res, "Error de validación", 400, errors);
+        return ResponseProvider.error(res, "Errores de validación", 400, errors);
     }
-    // Si todo está bien, pasamos al siguiente middleware o controlador
+
+    // Si no hay errores, continuar con el registro
     next();
 }

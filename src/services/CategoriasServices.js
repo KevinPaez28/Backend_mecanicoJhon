@@ -1,3 +1,4 @@
+import e from "express";
 import Categoria from "../models/categorias.js";
 
 class CategoriasServices {
@@ -64,6 +65,8 @@ class CategoriasServices {
                 data: categoriaCreada,
             };
         } catch (error) {
+            console.log(error);
+            
             return {
                 error: true,
                 code: 500,

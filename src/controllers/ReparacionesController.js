@@ -113,6 +113,58 @@ class ReparacionesController {
         }
     }
 
+    static getreparacionesFecha = async (req, res) => {
+        try {
+            const response = await ReparacionesServices.getReparacionesFecha();
+            if (response.error) {
+                return ResponseProvider.error(
+                    res,
+                    response.message,
+                    response.code
+                );
+            }
+
+            return ResponseProvider.success(
+                res,
+                response.data,
+                response.message,
+                response.code
+            );
+        } catch (error) {
+            return ResponseProvider.error(
+                res,
+                "Error interno al obtener las reparaciones",
+                500
+            );
+        }
+    }
+
+    static reparacionesAdmin = async (req, res) => {
+        try {
+            const response = await ReparacionesServices.getreparacionesadmin();
+            if (response.error) {
+                return ResponseProvider.error(
+                    res,
+                    response.message,
+                    response.code
+                );
+            }
+
+            return ResponseProvider.success(
+                res,
+                response.data,
+                response.message,
+                response.code
+            );
+        } catch (error) {
+            return ResponseProvider.error(
+                res,
+                "Error interno al obtener las reparaciones",
+                500
+            );
+        }
+    }
+
     // POST - Crear nueva reparación
     static postReparacion = async (req, res) => {
         const datos = req.body;

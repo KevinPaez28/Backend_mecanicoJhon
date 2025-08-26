@@ -53,10 +53,10 @@ class ProductosServices {
         }
     }
 
-    static async createProducto(nombre, descripcion, precio, categoria_id) {
+    static async createProducto(nombre, precio, stock, categoria_id) {
         try {
             const OBJProducto = new Producto();
-            const productoCreado = await OBJProducto.Create(nombre, descripcion, precio, categoria_id);
+            const productoCreado = await OBJProducto.Create(nombre, precio, stock, categoria_id);
             return {
                 error: false,
                 code: 201,

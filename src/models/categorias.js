@@ -23,16 +23,15 @@ class Categoria {
         }
     }
 
-    async Create(nombre_categoria, descripcion) {
+    async Create(nombre_categoria) {
         try {
             const [result] = await connection.query(
-                `INSERT INTO Categorias (nombre) VALUES (?, ?)`,
-                [nombre_categoria, descripcion]
+                `INSERT INTO Categorias (nombre) VALUES (?)`,
+                [nombre_categoria]
             );
             return {
                 id: result.insertId,
                 nombre_categoria,
-                descripcion,
             };
         } catch (error) {
             throw new Error("Error al crear la categoría");

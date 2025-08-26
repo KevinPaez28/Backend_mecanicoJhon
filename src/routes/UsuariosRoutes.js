@@ -1,14 +1,23 @@
-import express from "express"
+import express from "express";
 
-import usuariosController from "../controllers/usuarioController.js"
+import usuariosController from "../controllers/usuarioController.js";
 import { camposUsuarios } from "../middlewares/usuarios/ValidacionCampos.js";
+import { verifyToken } from "../middlewares/AuthToken/AuthToken.js"; 
+import { login, refreshToken, register } from "../controllers/AuthController.js";
 
 const router = express.Router();
 
-router.get("/",usuariosController.getUsuarios)
-router.get("/:id", usuariosController.getByidUsuarios)
-router.post("",camposUsuarios,usuariosController.postUsuarios)
-router.put("/:id",camposUsuarios,usuariosController.actualizarUsuarios)
-router.put("/activar/:id",camposUsuarios,usuariosController.ActivarUsuarios)
-router.put("/desactivar/:id",camposUsuarios,usuariosController.desactivarUsuarios)
+// Rutas públicas
+router.post("/", camposUsuarios, register);
+router.post("/login", login);
+router.post("/refresh", refreshToken);
+
+// Rutas protegidas con token
+router.get("/", usuariosController.getUsuarios);
+router.get("/buscar", verifyToken, usuariosController.getByidUsuarios);
+router.get("/:id", verifyToken, usuariosController.getByidUsuarios);
+router.put("/activar/:id", verifyToken, usuariosController.ActivarUsuarios);
+router.put("/:id", verifyToken,usuariosController.actualizarUsuarios);
+router.put("/desactivar/:id", verifyToken, usuariosController.desactivarUsuarios);
+
 export default router;

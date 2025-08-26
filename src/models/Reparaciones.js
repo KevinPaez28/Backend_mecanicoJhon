@@ -76,14 +76,46 @@ class Reparacion {
             throw new Error("Error al obtener la reparación");
         }
     }
+    
+    async getfecha(){
+        try {
+            const sql = `SELECT sr.fecha, v.placa, s.nombre_servicio FROM serviciosrealizados sr
+            INNER JOIN vehiculos v ON sr.vehiculo_id = v.vehiculo_id 
+            INNER JOIN servicios s ON sr.servicio_id = s.servicio_id`
+            const [rows] = await connection.query(sql);
+            return rows;
+        } catch (error) {
+           throw new Error("Error al crear la reparación");
+        }
+    }
+
+    async getAdmin(){
+        try {
+            const [rows] = await connection.query (` SELECT sr.detalle_id, sr.fecha, sr.observaciones,
+               v.placa,
+               u.nombre AS usuario,
+               es.nombre_estado AS estado,
+               s.nombre_servicio AS servicio
+        FROM serviciosrealizados sr
+        INNER JOIN vehiculos v ON sr.vehiculo_id = v.vehiculo_id
+        INNER JOIN usuarios u ON v.usuario_id = u.usuario_id
+        INNER JOIN estadosservicio es ON sr.estado_id = es.estado_id
+        INNER JOIN servicios s ON sr.servicio_id = s.servicio_id`)
+            ;
+            console.log(rows);
+            return rows
+        } catch (error) {
+           throw new Error("Error al encontrar la reparacion");
+        }
+    }
 
     // Insertar nueva reparación
     async Create(data) {
         try {
-            const sql = `
+             const [rows] = await connection.query(`
                 INSERT INTO ServiciosRealizados (servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico)
                 VALUES (?, ?, ?, ?, ?, ?)
-            `;
+            `);
             const [result] = await connection.query(sql, [
                 data.servicio_id,
                 data.vehiculo_id,
@@ -94,7 +126,6 @@ class Reparacion {
             ]);
             return { id: result.insertId, ...data };
         } catch (error) {
-            console.log(error);
             throw new Error("Error al crear la reparación");
         }
     }

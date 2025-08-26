@@ -53,17 +53,17 @@ class DetalleConsumibleServices {
         }
     }
 
-    static async createDetalleConsumible(data) {
+    static async createDetalleConsumible( detalle_id, producto_id, cantidad_usada, precio_unitario, total) {
         try {
             const OBJDetalle = new DetalleConsumible();
-            const detalleCreado = await OBJDetalle.Create(data);
+            const detalleCreado = await OBJDetalle.Create( detalle_id, producto_id, cantidad_usada, precio_unitario, total);
             return {
                 error: false,
                 code: 201,
                 message: "Detalle consumible creado correctamente",
                 data: detalleCreado,
             };
-        } catch (error) {
+        } catch (error) {           
             return {
                 error: true,
                 code: 500,

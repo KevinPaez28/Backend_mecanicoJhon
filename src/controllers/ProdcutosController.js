@@ -54,9 +54,9 @@ class ProductosController {
     }
 
     static postProducto = async (req, res) => {
-        const { nombre, descripcion, precio, categoria_id } = req.body;
+        const { nombre, precio, stock, categoria_id } = req.body;
         try {
-            const producto = await ProductosServices.createProducto(nombre, descripcion, precio, categoria_id);
+            const producto = await ProductosServices.createProducto(nombre, precio, stock, categoria_id);
             if (producto.error) {
                 return ResponseProvider.error(
                     res,

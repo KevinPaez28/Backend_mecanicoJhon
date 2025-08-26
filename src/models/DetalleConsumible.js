@@ -29,11 +29,11 @@ class DetalleConsumible {
     }
 
     // Crear un registro
-    async Create({ detalle_id, producto_id, cantidad_usada, precio_unitario, total }) {
+    async Create( detalle_id, producto_id, cantidad_usada, precio_unitario, total ) {
         try {
             const [result] = await connection.query(
                 "INSERT INTO ServiciosConsumibles (detalle_id, producto_id, cantidad_usada, precio_unitario, total) VALUES (?, ?, ?, ?, ?)",
-                [detalle_id, producto_id, cantidad_usada, precio_unitario, total]
+                [ detalle_id, producto_id, cantidad_usada, precio_unitario, total]
             );
             return {
                 id: result.insertId,
@@ -44,6 +44,8 @@ class DetalleConsumible {
                 total
             };
         } catch (error) {
+                        console.log(error);
+
             throw new Error("Error al crear el detalle consumible");
         }
     }

@@ -3,18 +3,30 @@ import connection from "../utils/db.js";
 class Usuario {
     async getall() {
         try {
-            const [rows] = await connection.query(`SELECT usuario_id, cedula, nombre, correo, telefono, usuario, contrasena, rol_id, estado_usuario_id FROM Usuarios`)
+            const [rows] = await connection.query(`SELECT usuario_id, cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado FROM Usuarios`)
             return rows
         } catch (error) {
+
             throw new Error("Error al obtener los usuarios")
         }
     }
 
-
+    async getbyUsuario(usuario) {
+        try {
+            const [rows] = await connection.query(`SELECT usuario_id, usuario, contrasena FROM Usuarios 
+            WHERE usuario = ?`, [usuario])
+            if (rows.length === 0) {
+                return [];
+            }
+            return rows[0]
+        } catch (error) {
+            throw new Error("Error al obtener el usuario")
+        }
+    }
 
     async getbyid(id) {
         try {
-            const [rows] = await connection.query(`SELECT usuario_id, cedula, nombre, correo, telefono, usuario, contrasena, rol_id, estado_usuario_id FROM Usuarios 
+            const [rows] = await connection.query(`SELECT usuario_id, cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado FROM Usuarios 
             WHERE usuario_id = ?`, [id])
             if (rows.length === 0) {
                 // Retorna un array vacío si no se encuentra el producto
@@ -25,22 +37,31 @@ class Usuario {
             throw new Error("Error al obtener el usuario")
         }
     }
-    async Create(cedula, nombre, correo, telefono, usuario, contrasena) {
+    async create(cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado) {
         try {
-            const [rows] = await connection.query(`INSERT INTO Usuarios (cedula, nombre, correo, telefono, usuario, contrasena, rol_id, estado_usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [cedula, nombre, correo, telefono, usuario, contrasena])
+            const [rows] = await connection.query(
+                `INSERT INTO Usuarios (cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                [cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado]
+            );
+
             return {
                 id: rows.insertId,
-                cedula: cedula,
-                nombre: nombre,
-                correo: correo,
-                telefono: telefono,
-                usuario: usuario,
-                contrasena: contrasena
-            }
+                cedula,
+                nombre,
+                correo,
+                telefono,
+                usuario,
+                contrasena
+            };
+
         } catch (error) {
-            throw new Error("Error al obtener el usuario")
+            // Mostrar error real
+            console.error("Error en Usuario.create:", error);
+            throw error; // lanzamos el error real
         }
     }
+
     async actualizar(id, campos) {
         try {
             let query = "UPDATE Usuarios SET ";
@@ -68,7 +89,7 @@ class Usuario {
     async activar(id) {
         try {
             const [result] = await connection.query(
-                "UPDATE Usuarios SET estado_usuario_id = 1 WHERE usuario_id = ?",
+                "UPDATE Usuarios SET id_estado = 1 WHERE usuario_id = ?",
                 [id]
             );
 
@@ -84,7 +105,7 @@ class Usuario {
     async desactivar(id) {
         try {
             const [result] = await connection.query(
-                "UPDATE Usuarios SET estado_usuario_id = 2 WHERE usuario_id = ?",
+                "UPDATE Usuarios SET id_estado = 2 WHERE usuario_id = ?",
                 [id]
             );
             if (result.affectedRows > 0) {

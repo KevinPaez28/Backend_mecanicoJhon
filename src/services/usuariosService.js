@@ -1,5 +1,5 @@
+import e from "express";
 import Usuario from "../models/Usuario.js";
-
 class UsuariosServices {
     static async getUsuarios() {
         try {
@@ -18,7 +18,7 @@ class UsuariosServices {
                 message: "Usuarios obtenidos correctamente",
                 data: usuarios,
             };
-        } catch (error) {
+        } catch (error) {            
             return {
                 error: true,
                 code: 500,
@@ -51,10 +51,10 @@ class UsuariosServices {
             };
         }
     }
-    static async CreateUsuario(cedula, nombre, correo, telefono, usuario, contrasena) {
+    static async CreateUsuario(cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado) {
         try {
             const OBJUsuario = new Usuario();
-            const UsuariosCreado = await OBJUsuario.Create(cedula, nombre, correo, telefono, usuario, contrasena)
+            const UsuariosCreado = await OBJUsuario.Create(cedula, nombre, correo, telefono, usuario, contrasena, rol_id, id_estado)
             return {
                 error: false,
                 code: 201,

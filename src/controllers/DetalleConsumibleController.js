@@ -54,9 +54,9 @@ class DetalleConsumibleController {
     }
 
     static postDetalleConsumible = async (req, res) => {
-        const { nombre, cantidad, precio } = req.body; // Ajusta según tus campos
+        const { detalle_id, producto_id, cantidad_usada, precio_unitario, total } = req.body; // Ajusta según tus campos de la base de datos
         try {
-            const detalle = await DetalleConsumibleServices.createDetalleConsumible({ nombre, cantidad, precio });
+            const detalle = await DetalleConsumibleServices.createDetalleConsumible( detalle_id, producto_id, cantidad_usada, precio_unitario, total );
             if (detalle.error) {
                 return ResponseProvider.error(
                     res,
@@ -78,6 +78,7 @@ class DetalleConsumibleController {
             );
         }
     }
+
 
     static actualizarDetalleConsumible = async (req, res) => {
         const { id } = req.params;

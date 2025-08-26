@@ -1,6 +1,6 @@
 import express from "express";
 import DetalleConsumibleController from "../controllers/DetalleConsumibleController.js";
-// import { camposDetalleConsumible } from "../middlewares/DetalleServicioConsumible/ValidacionCampos.js";
+import { camposDetalleConsumible } from "../middlewares/ProductosConsumibles/ValidacionCampos.js";
 
 const router = express.Router();
 
@@ -11,10 +11,10 @@ router.get("/", DetalleConsumibleController.getDetalleConsumibles);
 router.get("/:id", DetalleConsumibleController.getDetalleConsumibleById);
 
 // POST - Crear un registro
-// router.post("/DetalleServConsumible", camposDetalleConsumible, DetalleConsumibleController.postDetalleConsumible);
+router.post("", camposDetalleConsumible, DetalleConsumibleController.postDetalleConsumible);
 
 // PUT - Actualizar un registro por ID
-// router.put("/DetalleServConsumible/:id", camposDetalleConsumible, DetalleConsumibleController.actualizarDetalleConsumible);
+router.put("/DetalleServConsumible/:id", camposDetalleConsumible, DetalleConsumibleController.actualizarDetalleConsumible);
 
 // DELETE - Eliminar un registro por ID
 router.delete("/:id", DetalleConsumibleController.deleteDetalleConsumible);

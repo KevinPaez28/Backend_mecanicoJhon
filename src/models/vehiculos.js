@@ -55,6 +55,8 @@ class Vehiculo {
         }
     }
 
+
+
     async actualizar(id, campos) {
         try {
             let query = "UPDATE Vehiculos SET ";

@@ -53,24 +53,31 @@ class VehiculosServices {
         }
     }
 
-    static async createVehiculo(placa, modelo, marca, color, anio, tipo, id_usuario) {
-        try {
-            const OBJVehiculo = new Vehiculo();
-            const vehiculoCreado = await OBJVehiculo.Create(placa, modelo, marca, color, anio, tipo, id_usuario);
-            return {
-                error: false,
-                code: 201,
-                message: "Vehículo creado correctamente",
-                data: vehiculoCreado,
-            };
-        } catch (error) {
-            return {
-                error: true,
-                code: 500,
-                message: "Error al crear el vehículo",
-            };
-        }
+    static async createVehiculo(placa, marca, modelo, usuario_id) {
+    try {
+        const OBJVehiculo = new Vehiculo();
+        const vehiculoCreado = await OBJVehiculo.Create(
+            placa,
+            marca,
+            modelo,
+            usuario_id // solo el usuario_id, nada más
+        );
+
+        return {
+            error: false,
+            code: 201,
+            message: "Vehículo creado correctamente",
+            data: vehiculoCreado,
+        };
+    } catch (error) {
+        return {
+            error: true,
+            code: 500,
+            message: "Error al crear el vehículo",
+        };
     }
+}
+
 
     static async actualizarVehiculo(id, campos) {
         try {

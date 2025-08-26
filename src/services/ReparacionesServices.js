@@ -109,6 +109,59 @@ class ReparacionesServices {
         }
     }
 
+    static async getReparacionesFecha() {
+        try {
+            const OBJReparacion = new Reparaciones();
+            const reparaciones = await OBJReparacion.getfecha();
+            if (reparaciones.length === 0) {
+                return {
+                    error: true,
+                    code: 404,
+                    message: "El usuario no tiene reparaciones registradas",
+                };
+            }
+            return {
+                error: false,
+                code: 200,
+                message: "Reparaciones obtenidas correctamente",
+                data: reparaciones,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                code: 500,
+                message: "Error al obtener las reparaciones del usuario",
+            };
+        }
+    }
+    static async getreparacionesadmin() {
+        try {
+            const OBJReparacion = new Reparaciones();
+            const reparaciones = await OBJReparacion.getAdmin();
+            console.log(reparaciones);
+            
+            if (reparaciones.length === 0) {
+                return {
+                    error: true,
+                    code: 404,
+                    message: "El usuario no tiene reparaciones registradas",
+                };
+            }
+            return {
+                error: false,
+                code: 200,
+                message: "Reparaciones obtenidas correctamente",
+                data: reparaciones,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                code: 500,
+                message: "Error al obtener las reparaciones del usuario",
+            };
+        }
+    }
+
     // Crear nueva reparación
     static async createReparacion(data) {
         try {

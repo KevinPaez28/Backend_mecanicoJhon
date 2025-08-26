@@ -54,16 +54,16 @@ class VehiculoController {
     }
 
     static postVehiculos = async (req, res) => {
-        const { placa, modelo, marca, color, anio, tipo } = req.body;
+        const { placa, marca, modelo, usuario_id } = req.body;
+
         try {
             const vehiculo = await VehiculosServices.createVehiculo(
                 placa,
-                modelo,
                 marca,
-                color,
-                anio,
-                tipo
+                modelo,
+                usuario_id
             );
+
             if (vehiculo.error) {
                 return ResponseProvider.error(
                     res,
@@ -71,9 +71,10 @@ class VehiculoController {
                     vehiculo.code
                 );
             }
+
             return ResponseProvider.success(
                 res,
-                vehiculo,
+                vehiculo.data,
                 "Vehículo creado correctamente",
                 201
             );
@@ -85,6 +86,8 @@ class VehiculoController {
             );
         }
     }
+
+
 
     static actualizarVehiculos = async (req, res) => {
         const { id } = req.params;
