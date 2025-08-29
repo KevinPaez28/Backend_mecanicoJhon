@@ -1,6 +1,6 @@
 export const campos = [
-    { name: "placa", require: true, minLength: 5, maxLength: 20 },
-    { name: "marca", require: true, minLength: 3, maxLength: 20 },
-    { name: "modelo", require: true, minLength: 2, maxLength: 20 },
-    { name: "usuario", require: true, minLength: 5, maxLength: 20 }
+    { name: "placa", required: true, minLength: 5, maxLength: 20 },
+    { name: "marca", required: true, minLength: 3, maxLength: 20 },
+    { name: "modelo", required: true, minLength: 2, maxLength: 20 },
+    { name: "usuario", required: true, minLength: 5, maxLength: 20 }
 ];

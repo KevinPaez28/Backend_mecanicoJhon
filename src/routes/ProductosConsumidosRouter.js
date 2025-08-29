@@ -14,7 +14,7 @@ router.get("/:id", DetalleConsumibleController.getDetalleConsumibleById);
 router.post("", camposDetalleConsumible, DetalleConsumibleController.postDetalleConsumible);
 
 // PUT - Actualizar un registro por ID
-router.put("/DetalleServConsumible/:id", camposDetalleConsumible, DetalleConsumibleController.actualizarDetalleConsumible);
+router.put("/DetalleServConsumible/", camposDetalleConsumible, DetalleConsumibleController.actualizarDetalleConsumible);
 
 // DELETE - Eliminar un registro por ID
 router.delete("/:id", DetalleConsumibleController.deleteDetalleConsumible);

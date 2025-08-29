@@ -1,25 +1,26 @@
 import express from "express";
 import vehiculosController from "../controllers/vehiculosController.js";
 import { camposVehiculos } from "../middlewares/vehiculos/ValidacionCampos.js";
-
+import { verifyToken } from "../middlewares/AuthToken/AuthToken.js"; 
+import { TienePermisos } from "../middlewares/Permisos/tienepermisos.js";
 const router = express.Router();
 
 // Obtener todos los vehículos
-router.get("/", vehiculosController.getVehiculos);
+router.get("/", TienePermisos("Vehiculos_Listar"),verifyToken, vehiculosController.getVehiculos);
 
-// Obtener vehículo por ID
-router.get("/:id", vehiculosController.getByidVehiculos);
+// Rutas específicas primero
+router.get("/usuarios/:id", vehiculosController.getVehiculosByUsuario);
+
+// Luego la genérica
+router.get("/:id", TienePermisos("Vehiculos_Listar"), verifyToken, vehiculosController.getByidVehiculos);
 
 // Crear vehículo
-router.post("/", camposVehiculos, vehiculosController.postVehiculos);
+router.post("/", TienePermisos("Vehiculos_Crear"), verifyToken, camposVehiculos, vehiculosController.postVehiculos);
 
 // Actualizar vehículo
-router.put("/:id", camposVehiculos, vehiculosController.actualizarVehiculos);
-
-// Obtener vehículos por usuario (con query param ?id_usuario=)
-router.get("/usuarios/porUsuario", vehiculosController.getVehiculosByUsuario);
+router.put("/:id",TienePermisos("Vehiculos_Actualizar"), verifyToken, camposVehiculos, vehiculosController.actualizarVehiculos);
 
 // Eliminar vehículo
-router.delete("/:id", vehiculosController.deleteVehiculo);
+router.delete("/:id",TienePermisos("Vehiculos_Eliminar") ,verifyToken, vehiculosController.deleteVehiculo);
 
 export default router;

@@ -167,9 +167,10 @@ class ReparacionesController {
 
     // POST - Crear nueva reparación
     static postReparacion = async (req, res) => {
-        const datos = req.body;
+       const {servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico, consumibles} = req.body;
+        
         try {
-            const reparacion = await ReparacionesServices.createReparacion(datos);
+            const reparacion = await ReparacionesServices.createReparacion(servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico, consumibles);
             if (reparacion.error) {
                 return ResponseProvider.error(
                     res,

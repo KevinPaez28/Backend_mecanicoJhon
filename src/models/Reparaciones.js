@@ -110,21 +110,13 @@ class Reparacion {
     }
 
     // Insertar nueva reparación
-    async Create(data) {
+    async Create(servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico, consumibles) {        
         try {
              const [rows] = await connection.query(`
                 INSERT INTO ServiciosRealizados (servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico)
                 VALUES (?, ?, ?, ?, ?, ?)
-            `);
-            const [result] = await connection.query(sql, [
-                data.servicio_id,
-                data.vehiculo_id,
-                data.fecha,
-                data.observaciones,
-                data.estado_id,
-                data.nombre_mecanico,
-            ]);
-            return { id: result.insertId, ...data };
+            ` , [servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico]);
+            return rows
         } catch (error) {
             throw new Error("Error al crear la reparación");
         }

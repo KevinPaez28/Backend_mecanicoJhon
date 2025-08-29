@@ -12,6 +12,10 @@ router.get("/id/:id", facturasController.getByidFacturas);
 // GET - Obtener facturas por usuario (consulta por query ?usuario_id=)
 router.get("/usuario", facturasController.getFacturasByUsuario);
 
+router.get("/usuarioid/:id", facturasController.getFacturasByUsuario);
+
+router.get("/FormDataReparacion", facturasController.peticionmasiva);
+
 // GET - Obtener el total de ventas
 router.get("/totalventas", facturasController.getFacturasByUsuario); // Si quieres otro método específico, se puede ajustar
 

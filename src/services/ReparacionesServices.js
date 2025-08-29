@@ -163,10 +163,10 @@ class ReparacionesServices {
     }
 
     // Crear nueva reparación
-    static async createReparacion(data) {
+    static async createReparacion(servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico, consumibles) {
         try {
             const OBJReparacion = new Reparaciones();
-            const reparacionCreada = await OBJReparacion.Create(data);
+            const reparacionCreada = await OBJReparacion.Create(servicio_id, vehiculo_id, fecha, observaciones, estado_id, nombre_mecanico, consumibles);
             return {
                 error: false,
                 code: 201,

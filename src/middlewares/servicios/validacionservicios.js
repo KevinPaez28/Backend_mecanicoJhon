@@ -1,11 +1,13 @@
 import { ResponseProvider } from "../../providers/ResponseProvider.js";
 import { campos } from "./campos.js";
 
+import connection from "../../utils/db.js";
+
 
 export async function camposServicios(req, res, next) {
     const { id } = req.params;
     console.log(id);
-    
+
     const errors = [];
     // Capturamos los campos del body de la petición
     const bodyKeys = Object.keys(req.body);
@@ -15,8 +17,34 @@ export async function camposServicios(req, res, next) {
     const camposPresentes = bodyKeys.filter((key) =>
         camposPermitidos.includes(key)
     );
-    // Si no hay campos presentes, devolver un error
+    // Si no hay campos presentes, solo saltar la validación si el método es DELETE
     if (camposPresentes.length === 0) {
+        if (req.method === "DELETE") {
+            // Validar si el servicio está asociado a una reparación antes de eliminar
+            const servicioId = req.params.id || req.body.servicio_id;
+            if (servicioId) {
+                try {
+                    const [rows] = await connection.query(
+                        `SELECT detalle_id FROM serviciosRealizados WHERE servicio_id = ?`,
+                        [servicioId]
+                    );
+                    if (rows.length > 0) {
+                        return ResponseProvider.error(
+                            res,
+                            "No se puede eliminar el servicio porque está asociado a una reparación.",
+                            400
+                        );
+                    }
+                } catch (err) {
+                    return ResponseProvider.error(
+                        res,
+                        `Error al consultar asociación con reparación: ${err.message}`,
+                        500
+                    );
+                }
+            }
+            return next();
+        }
         return ResponseProvider.error(
             res,
             "Debe enviar al menos un campo válido para actualizar",
@@ -39,26 +67,46 @@ export async function camposServicios(req, res, next) {
                     campo: name,
                     message: `El campo ${name} es obligatorio y no puede estar vacío.`,
                 });
-                // Si el campo es requerido y está vacío, continuamos al siguiente campo, evitando el resto de validaciones
                 continue;
             }
-            // Validar el tamaño mínimo y máximo del campo
             if (minLength && valor.length < minLength) {
                 errors.push({
                     campo: name,
                     message: `El campo ${name} debe tener al menos ${minLength} caracteres.`,
                 });
-                // Si el campo no cumple con el tamaño mínimo, continuamos al siguiente campo, evitando el resto de validaciones
                 continue;
             }
-            // Validar el tamaño máximo del campo
             if (maxLength && valor.length > maxLength) {
                 errors.push({
                     campo: name,
                     message: `El campo ${name} no puede tener más de ${maxLength} caracteres.`,
                 });
-                // Si el campo no cumple con el tamaño máximo, continuamos al siguiente campo, evitando el resto de validaciones
                 continue;
+            }
+            // Validar si el servicio está asociado a una reparación
+            if (name === "servicio_id") {
+                try {
+                    const [rows] = await connection.query(
+                        `SELECT reparacion_id FROM Reparaciones WHERE servicio_id = ?`,
+                        [valor]
+                    );
+                    if (rows.length > 0) {
+                        errors.push({
+                            campo: name,
+                            message: `El servicio está asociado a una reparación.`
+                        });
+                    } else {
+                        errors.push({
+                            campo: name,
+                            message: `El servicio no está asociado a ninguna reparación.`
+                        });
+                    }
+                } catch (err) {
+                    errors.push({
+                        campo: name,
+                        message: `Error al consultar asociación con reparación: ${err.message}`
+                    });
+                }
             }
         }
     }

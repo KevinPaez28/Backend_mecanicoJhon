@@ -190,6 +190,47 @@ class Factura {
             throw new Error("Error al eliminar los detalles de la factura");
         }
     }
+    async Peticion() {
+        try {
+            // 1. Usuarios
+            const [usuarios] = await connection.query(
+                "SELECT usuario_id, nombre FROM Usuarios"
+            );
+
+            // 2. Vehículos
+            const [vehiculos] = await connection.query(
+                "SELECT vehiculo_id, placa FROM Vehiculos"
+            );
+
+            // 3. Servicios
+            const [servicios] = await connection.query(
+                "SELECT servicio_id, nombre_servicio FROM Servicios"
+            );
+
+            // 4. Productos
+            const [productos] = await connection.query(
+                "SELECT producto_id, nombre, precio, stock FROM Productos"
+            );
+
+            // 5. Estados
+            const [estados] = await connection.query(
+                "SELECT estado_id, nombre_estado FROM EstadosServicio"
+            );
+
+            // Construir respuesta como un objeto único
+            return {
+                usuarios,
+                vehiculos,
+                servicios,
+                productos,
+                estados
+            };
+        } catch (error) {
+            console.error(error);
+            throw new Error("Error al obtener datos para la factura");
+        }
+    }
+
 }
 
 export default Factura;

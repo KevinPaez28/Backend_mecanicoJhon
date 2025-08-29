@@ -31,7 +31,7 @@ class VehiculosServices {
         try {
             const OBJVehiculo = new Vehiculo();
             const vehiculo = await OBJVehiculo.getbyid(id);
-            if (vehiculo.length === 0) {
+            if (!vehiculo) {
                 return {
                     error: true,
                     code: 404,
@@ -53,37 +53,35 @@ class VehiculosServices {
         }
     }
 
-    static async createVehiculo(placa, marca, modelo, usuario_id) {
-    try {
-        const OBJVehiculo = new Vehiculo();
-        const vehiculoCreado = await OBJVehiculo.Create(
-            placa,
-            marca,
-            modelo,
-            usuario_id // solo el usuario_id, nada más
-        );
-
-        return {
-            error: false,
-            code: 201,
-            message: "Vehículo creado correctamente",
-            data: vehiculoCreado,
-        };
-    } catch (error) {
-        return {
-            error: true,
-            code: 500,
-            message: "Error al crear el vehículo",
-        };
+    static async createVehiculo(placa, marca, modelo, usuarioNombre) {
+        try {
+            const OBJVehiculo = new Vehiculo();
+            const vehiculoCreado = await OBJVehiculo.Create(
+                placa,
+                marca,
+                modelo,
+                usuarioNombre
+            );
+            return {
+                error: false,
+                code: 201,
+                message: "Vehículo creado correctamente",
+                data: vehiculoCreado,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                code: 500,
+                message: "Error al crear el vehículo",
+            };
+        }
     }
-}
-
 
     static async actualizarVehiculo(id, campos) {
         try {
             const OBJVehiculo = new Vehiculo();
             const vehiculoActualizado = await OBJVehiculo.actualizar(id, campos);
-            if (vehiculoActualizado === null) {
+            if (!vehiculoActualizado) {
                 return {
                     error: true,
                     code: 400,
@@ -105,11 +103,11 @@ class VehiculosServices {
         }
     }
 
-    static async deleteVehiculo(id) {
+    static async eliminarVehiculo(id) {
         try {
             const OBJVehiculo = new Vehiculo();
             const vehiculoEliminado = await OBJVehiculo.delete(id);
-            if (vehiculoEliminado === null) {
+            if (!vehiculoEliminado) {
                 return {
                     error: true,
                     code: 400,
@@ -131,11 +129,11 @@ class VehiculosServices {
         }
     }
 
-    static async getVehiculosByUsuario(id_usuario) {
+    static async getVehiculosByUsuario(id) {
         try {
             const OBJVehiculo = new Vehiculo();
-            const vehiculos = await OBJVehiculo.getByUsuarioId(id_usuario);
-            if (vehiculos.length === 0) {
+            const vehiculos = await OBJVehiculo.getByUsuarioId(id);
+            if (!vehiculos || vehiculos.length === 0) {
                 return {
                     error: true,
                     code: 404,

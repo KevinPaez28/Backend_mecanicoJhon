@@ -14,6 +14,7 @@ import ProductosConsumidosRouter from "./src/routes/ProductosConsumidosRouter.js
 import ReparacionesRouter from "./src/routes/ReparacionesRouter.js"
 import RolesRouter from "./src/routes/RolesRoutes.js";
 import facturasRoutes from "./src/routes/FacturasRouter.js"
+import PermisosRouter from "./src/routes/PermisosRouter.js"
 dotenv.config();
 
 // Crear la instancia de Express
@@ -39,6 +40,7 @@ app.use('/api/ProductosConsumidos/',ProductosConsumidosRouter)
 app.use('/api/reparaciones/',ReparacionesRouter)
 app.use('/api/Roles/',RolesRouter)
 app.use('/api/Facturas/',facturasRoutes)
+app.use('/api/Permisos/',PermisosRouter)
 
 // Puerto para ejecutar el servidor
 const port = process.env.PORT || 3000;

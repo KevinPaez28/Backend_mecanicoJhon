@@ -137,6 +137,30 @@ class FacturaController {
             );
         }
     }
+    static peticionmasiva = async (req, res) => {
+        try {
+            const response = await FacturasServices.peticionesmasivas();
+            if (response.error) {
+                return ResponseProvider.error(
+                    res,
+                    response.message,
+                    response.code
+                );
+            }
+            return ResponseProvider.success(
+                res,
+                response.data,
+                response.message,
+                response.code
+            );
+        } catch (error) {
+            return ResponseProvider.error(
+                res,
+                "Error interno en el servidor",
+                500
+            );
+        }
+    }
 
     // Obtener facturas por usuario
     static getFacturasByUsuario = async (req, res) => {

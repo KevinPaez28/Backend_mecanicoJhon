@@ -25,37 +25,60 @@ class Vehiculo {
         }
     }
 
-    async getByUsuarioId(usuario_id) {
+    async getByUsuarioId(id) {
+        console.log(id);
+        
         try {
             const [rows] = await connection.query(
                 `SELECT vehiculo_id, placa, marca, modelo, usuario_id FROM Vehiculos WHERE usuario_id = ?`,
-                [usuario_id]
+                [id]
             );
             return rows;
         } catch (error) {
             throw new Error("Error al obtener los vehículos por usuario");
         }
     }
-
-    async Create(placa, marca, modelo, usuario_id) {
+    async getUsuarioIdPorNombre(usuarioNombre) {
         try {
+            const [rows] = await connection.query(
+                `SELECT usuario_id FROM Usuarios WHERE usuario = ?`,
+                [usuarioNombre]
+            );
+            console.log(rows);
+            
+            if (rows.length > 0) {
+                return rows[0].usuario_id; // Retorna el ID del usuario
+            } else {
+                throw new Error("Usuario no existe");
+            }
+        } catch (error) {
+            throw new Error("Error al buscar usuario: " + error.message);
+        }
+    }
+
+    async Create(placa, marca, modelo, usuarioNombre) {
+        // console.log(placa,marca,modelo,usuarioNombre);
+        
+        try {
+            const usuarioId = await this.getUsuarioIdPorNombre(usuarioNombre);
+
             const [result] = await connection.query(
                 `INSERT INTO Vehiculos (placa, marca, modelo, usuario_id) VALUES (?, ?, ?, ?)`,
-                [placa, marca, modelo, usuario_id]
+                [placa, marca, modelo, usuarioId]
             );
+
             return {
                 id: result.insertId,
                 placa,
                 marca,
                 modelo,
-                usuario_id,
+                usuario_id: usuarioId,
             };
         } catch (error) {
-            throw new Error("Error al crear el vehículo");
+            console.error(error.message);
+            throw new Error("No se pudo crear el vehículo");
         }
     }
-
-
 
     async actualizar(id, campos) {
         try {

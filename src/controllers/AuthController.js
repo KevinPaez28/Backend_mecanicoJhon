@@ -42,13 +42,12 @@ export const login = async (req, res) => {
 };
 
 export const refreshToken = async (req, res) => {
-  // Asiganmos el token a una variable
-  const authHeader = req.headers.authorization;
   try {
-    const refreshToken = authHeader.split(" ")[1];
-    // Verificamos el token de accesso
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return ResponseProvider.error(res, "No se envió el refresh token", 400);
+    }
     const response = await AuthServices.verifyAccessToken(refreshToken);
-    // Llamamos el provider para centralizar los mensajes de respuesta
     ResponseProvider.success(
       res,
       response.data,
@@ -56,7 +55,6 @@ export const refreshToken = async (req, res) => {
       response.code
     );
   } catch (error) {
-    // Llamamos el provider para centralizar los mensajes de respuesta
     ResponseProvider.error(res, "Error en el servidor", 500);
   }
 };

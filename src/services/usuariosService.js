@@ -1,5 +1,6 @@
 import e from "express";
 import Usuario from "../models/Usuario.js";
+
 class UsuariosServices {
     static async getUsuarios() {
         try {

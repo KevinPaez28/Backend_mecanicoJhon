@@ -183,6 +183,31 @@ class FacturasServices {
             };
         }
     }
+    static async peticionesmasivas() {
+        try {
+            const OBJFactura = new Factura();
+            const facturas = await OBJFactura.Peticion();
+            if (facturas.length === 0) {
+                return {
+                    error: true,
+                    code: 404,
+                    message: "No hay facturas registradas para el usuario",
+                };
+            }
+            return {
+                error: false,
+                code: 200,
+                message: "Facturas obtenidas correctamente",
+                data: facturas,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                code: 500,
+                message: "Error al obtener las facturas por usuario",
+            };
+        }
+    }
 
     // Eliminar detalles de una factura
     static async eliminarDetallesFactura(facturaId) {
