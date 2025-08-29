@@ -14,7 +14,7 @@ router.post("/refresh", refreshToken);
 
 // Rutas protegidas con token
 router.get("/",  usuariosController.getUsuarios);
-router.get("/buscar", verifyToken, usuariosController.getByidUsuarios);
+router.get("/buscar", usuariosController.getByidUsuarios);
 router.get("/:id", verifyToken, usuariosController.getByidUsuarios);
 router.put("/activar/:id",TienePermisos("Usuarios_Actualizar"), verifyToken, usuariosController.ActivarUsuarios);
 router.put("/:id", TienePermisos("Usuarios_Actualizar"),verifyToken,usuariosController.actualizarUsuarios);
